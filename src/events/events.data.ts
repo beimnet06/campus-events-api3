@@ -1,9 +1,9 @@
-
 import type { Event } from './event.interface.js';
 
 export const events: Event[] = [
   {
     id: 'evt-101',
+    organizerId: 'user-10',
     title: 'Technology Innovation Conference',
     description: 'A conference about modern technology and innovation.',
     location: 'Main Campus',
@@ -13,6 +13,7 @@ export const events: Event[] = [
   },
   {
     id: 'evt-102',
+    organizerId: 'user-20',
     title: 'Web Development Workshop',
     description: 'Learn modern web development technologies.',
     location: 'Engineering Block',
@@ -22,6 +23,7 @@ export const events: Event[] = [
   },
   {
     id: 'evt-103',
+    organizerId: 'user-10',
     title: 'Business Entrepreneurship Day',
     description: 'Discover business ideas and entrepreneurship.',
     location: 'Business Block',
@@ -31,6 +33,7 @@ export const events: Event[] = [
   },
   {
     id: 'evt-104',
+    organizerId: 'user-20',
     title: 'Campus Sports Competition',
     description: 'A fun sports competition for students.',
     location: 'Sports Field',
@@ -40,6 +43,7 @@ export const events: Event[] = [
   },
   {
     id: 'evt-105',
+    organizerId: 'user-10',
     title: 'Artificial Intelligence Seminar',
     description: 'An introduction to artificial intelligence.',
     location: 'Main Campus',

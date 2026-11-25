@@ -7,4 +7,5 @@ export interface Event {
   eventDate: string;
   category: string;
   isPublished: boolean;
+  organizerId:string;
 }

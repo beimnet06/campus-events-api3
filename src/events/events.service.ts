@@ -8,14 +8,22 @@ import type { Event } from './event.interface.js';
 import type { Session } from './session.interface.js';
 import type { FindEventsQueryDto } from './dto/find-events-query.dto.js';
 import type { CreateEventDto } from './dto/create-event.dto.js';
+import type { UpdateEventDto } from './dto/update-event.dto.js';
+import type { UpdateSessionDto } from './dto/update-session.dto.js';
+
+import { Role, AuthenticatedUser } from '../auth/auth.model.js';
 
 @Injectable()
 export class EventsService {
   // Create a new event
-  create(createEventDto: CreateEventDto): Event {
+  create(
+    createEventDto: CreateEventDto,
+    organizerId: string,
+  ): Event {
     const newEvent: Event = {
       id: `evt-${Date.now()}`,
       ...createEventDto,
+      organizerId,
     };
 
     events.push(newEvent);
@@ -23,12 +31,54 @@ export class EventsService {
     return newEvent;
   }
 
-  // Get all events with filtering, sorting and pagination
+  // Update an existing event
+  updateEvent(
+    id: string,
+    updateEventDto: UpdateEventDto,
+    user: AuthenticatedUser,
+  ): Event {
+    const event = this.findOne(id);
+
+    if (
+      user.role === Role.ORGANIZER &&
+      event.organizerId !== user.id
+    ) {
+      throw new NotFoundException('Event not found');
+    }
+
+    Object.assign(event, updateEventDto);
+
+    return event;
+  }
+
+  // Update a session
+  updateSession(
+    eventId: string,
+    sessionId: string,
+    updateSessionDto: UpdateSessionDto,
+    user: AuthenticatedUser,
+  ): Session {
+    const event = this.findOne(eventId);
+
+    if (
+      user.role === Role.ORGANIZER &&
+      event.organizerId !== user.id
+    ) {
+      throw new NotFoundException('Event not found');
+    }
+
+    const session = this.findOneSession(eventId, sessionId);
+
+    Object.assign(session, updateSessionDto);
+
+    return session;
+  }
+
+  // Get all published events with filtering, sorting and pagination
   findAll(query: FindEventsQueryDto) {
     const {
       category,
       location,
-      isPublished,
       sortBy = 'eventDate',
       order = 'asc',
       page = 1,
@@ -37,14 +87,14 @@ export class EventsService {
 
     let result = events.filter((event) => {
       const matchesCategory =
-        !category || event.category.toLowerCase() === category.toLowerCase();
+        !category ||
+        event.category.toLowerCase() === category.toLowerCase();
 
       const matchesLocation =
         !location ||
         event.location.toLowerCase().includes(location.toLowerCase());
 
-      const matchesPublished =
-        isPublished === undefined || event.isPublished === isPublished;
+      const matchesPublished = event.isPublished === true;
 
       return matchesCategory && matchesLocation && matchesPublished;
     });
@@ -78,12 +128,27 @@ export class EventsService {
     return event;
   }
 
-  // Get upcoming events
+  // Get one published event by ID
+  findPublishedOne(id: string): Event {
+    const event = this.findOne(id);
+
+    if (!event.isPublished) {
+      throw new NotFoundException('Event not found');
+    }
+
+    return event;
+  }
+
+  // Get upcoming published events
   findUpcoming(): Event[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return events.filter((event) => new Date(event.eventDate) >= today);
+    return events.filter(
+      (event) =>
+        event.isPublished === true &&
+        new Date(event.eventDate) >= today,
+    );
   }
 
   // Get all sessions for an event

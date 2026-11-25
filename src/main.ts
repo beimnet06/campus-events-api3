@@ -34,6 +34,7 @@ async function bootstrap() {
     },
     'api-key',
   )
+  .addBearerAuth()
   .build();
   const document = SwaggerModule.createDocument(app, config);
 

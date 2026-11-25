@@ -1,31 +1,30 @@
 # Campus Events API
 
-A RESTful backend API built with **NestJS and TypeScript** for managing campus events.
+A RESTful backend API for managing campus events and sessions, built with **NestJS** and TypeScript.
 
 ## Features
-- Event management (GET and POST)
-- API Key Authentication (Guard)
-- Request Logging (Middleware)
-- Request Timing (Interceptor)
-- Data Validation (DTO & ValidationPipe)
-- Swagger Documentation
+- JWT authentication
+- Role-based authorization
+- Event and session management
+- Organizer ownership validation
+- Event filtering and sorting
+- Pagination
+- Request validation
+- Swagger API documentation
 
-## Installation
+## Tech Stack
+- NestJS
+- TypeScript
+- Passport & JWT
+- Swagger
+
+## Run Locally
 
 ```bash
 npm install
 npm run start:dev
 ```
 
-## URLs
-- API: `http://localhost:3000/api`
-- Swagger: `http://localhost:3000/api/docs`
+API base URL: `http://localhost:3000/api`
 
-## Environment Variable
-
-```env
-CLASSROOM_API_KEY=your-secret-api-key
-```
-
-## Author
-Developed as a NestJS learning project.
+API documentation: `http://localhost:3000/docs`
