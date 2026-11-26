@@ -6,10 +6,13 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
+import { JwtAuthGuard } from './auth/jwt-auth.guard.js';
 import { EventsModule } from './events/events.module.js';
 import { LoggerMiddleware } from './common/middleware/logger.middleware.js';
 
@@ -19,8 +22,16 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware.js';
     AuthModule,
     EventsModule,
   ],
+
   controllers: [AppController],
-  providers: [AppService],
+
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -11,13 +11,34 @@ import { RolesGuard } from './roles.guard.js';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
+
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'classroom-demo-secret-change-me',
-      signOptions: { expiresIn: '1h' },
+      secret:
+        process.env.JWT_ACCESS_SECRET ||
+        process.env.JWT_SECRET ||
+        'classroom-access-secret-change-me',
+
+      signOptions: {
+        expiresIn: '15m',
+      },
     }),
   ],
+
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
-  exports: [AuthService, JwtModule, PassportModule, JwtAuthGuard, RolesGuard],
+
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    RolesGuard,
+  ],
+
+  exports: [
+    AuthService,
+    JwtModule,
+    PassportModule,
+    JwtAuthGuard,
+    RolesGuard,
+  ],
 })
 export class AuthModule {}

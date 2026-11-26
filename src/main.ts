@@ -10,7 +10,7 @@ async function bootstrap() {
   // Global API prefix
   app.setGlobalPrefix('api');
 
-  // Validation
+  // Global validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -23,24 +23,34 @@ async function bootstrap() {
 
   // Swagger configuration
   const config = new DocumentBuilder()
-  .setTitle('Campus Events API')
-  .setDescription('API documentation for the Campus Events application')
-  .setVersion('1.0')
-  .addApiKey(
-    {
-      type: 'apiKey',
-      name: 'x-api-key',
-      in: 'header',
-    },
-    'api-key',
-  )
-  .addBearerAuth()
-  .build();
+    .setTitle('Campus Events API')
+    .setDescription(
+      'API documentation for the Campus Events application',
+    )
+    .setVersion('1.0')
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'x-api-key',
+        in: 'header',
+      },
+      'api-key',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token',
+    )
+    .build();
+
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('docs', app, document, {
-  useGlobalPrefix: true,
-});
+    useGlobalPrefix: true,
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
